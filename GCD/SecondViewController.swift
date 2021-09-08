@@ -32,6 +32,39 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchImage()
+        delay(3) {
+            self.loginAlert()
+        }
+    }
+    
+    // [9] Задержка кода. @escaping - так как closure не замкнут, а может передаваться
+    fileprivate func delay(_ delay: Int, closure: @escaping () -> ()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(delay)) {
+            closure()
+        }
+    }
+    
+    // [9]
+    fileprivate func loginAlert() {
+        let ac = UIAlertController(title: "Are you registered?", message: "Enter your username and password", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        
+        ac.addAction(okAction)
+        ac.addAction(cancelAction)
+        
+        ac.addTextField { (usernameTF) in
+            usernameTF.placeholder = "username"
+        }
+        
+        ac.addTextField { (userPasswordTF) in
+            userPasswordTF.placeholder = "password"
+            // [9] Не видеть вводимый пароль
+            userPasswordTF.isSecureTextEntry = true
+        }
+        
+        self.present(ac, animated: true, completion: nil)
     }
     
     // [7] Метод получения изображения
