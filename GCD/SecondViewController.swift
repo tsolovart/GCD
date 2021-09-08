@@ -40,10 +40,18 @@ class SecondViewController: UIViewController {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
         
-        // [7] Если адрес существует, то получаем данные ввиде Data
-        guard let url = imageURL, let imageData = try? Data(contentsOf: url) else { return }
-        // [7] устанавливаем новое значение для изображения
-        self.image = UIImage(data: imageData)
+        // [8] Процесс загрузки в другой поток.
+        let queue = DispatchQueue.global(qos: .utility)
+        // [8] Добавляем процесс ассинхронно, чтобы не ждать, когда выполнится задача
+        queue.async {
+            // [7] Если адрес существует, то получаем данные ввиде Data
+            guard let url = self.imageURL, let imageData = try? Data(contentsOf: url) else { return }
+            // [8] Возврат в главный поток
+            DispatchQueue.main.async {
+                // [7] устанавливаем новое значение для изображения
+                self.image = UIImage(data: imageData)
+            }
         }
+    }
     
 }
